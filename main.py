@@ -61,13 +61,13 @@ def calculatePath(start, finish, parentSet):
     
     return path[::-1]
 
-def aStar(graph: list, start: int, end: int, coordFile):
+def aStar(graph: list, start: int, end: int, coordFile, heuricticFunc):
     visitedNodes = set()
     queuedNodes = [graph[start]]
     nodeParent = {}
     
     print("Building Heuristic")
-    flatWorldHeuristic(graph, start, coordFile)
+    heuricticFunc(graph, start, coordFile)
     print("Finished Building Heuristic")
     
     while queuedNodes is not []:
@@ -95,7 +95,7 @@ def aStar(graph: list, start: int, end: int, coordFile):
     return calculatePath(start, end, nodeParent)
 
 ##WORKING
-def flatWorldHeuristic(graph: list, start: int, filename):
+def heuristicDistanceBetweenNodes(graph: list, start: int, filename):
     heuristicFile = open(filename, "r")
     startingNode = graph[start]
     NodeLat = 0
@@ -159,11 +159,11 @@ def main():
     # endTimeDFS = time.perf_counter()
     # print("DFS time: ", endTimeDFS - startTimeDFS, "seconds")
 
-    firstValue = random.randint(1, 243552)
-    secondValue = random.randint(1, 243552)
+    firstValue = 154542 #random.randint(154542, 243400)
+    secondValue = 243400 #random.randint(1, 243552)
 
     startTimeBFS = time.perf_counter()
-    print(aStar(nodes, firstValue, secondValue, coordFile))
+    print(aStar(nodes, firstValue, secondValue, coordFile, heuristicDistanceBetweenNodes))
     endTimeBFS = time.perf_counter()
     print("BFS time: ", endTimeBFS - startTimeBFS, "seconds")
 
