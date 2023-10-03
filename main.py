@@ -1,3 +1,4 @@
+from cmath import sqrt
 import operator
 import Node as nd
 import time
@@ -60,38 +61,29 @@ def calculatePath(start, finish, parentSet):
     return path
 
 def bestFirstSearch(graph: list, start: int, end: int):
-    queuedNodes = [(start, 0)]
-    visitedNodes = set()
-    nodeParent = {}
-    
-    while queuedNodes is not []:
-        # for node in queuedNodes:
-        #     print(node[0].value, node[1], end=" ")
-        # print()
-        currentNodeTuple = queuedNodes.pop(0)
-        currentNode = graph[currentNodeTuple[0]]
-        currentNodeCost = currentNodeTuple[1]
-        
-        if currentNode.value == end:
-            break
-        
-        for connectedNode in currentNode.connectedNodes:
-            if connectedNode[0] not in visitedNodes:
-                nodeParent[connectedNode[0]] = currentNode.value
-                costToConnectedNode = currentNodeCost + connectedNode[1]
-                queuedNodes.append((connectedNode[0], costToConnectedNode))
-                
-        queuedNodes.sort(key=operator.itemgetter(1))
-        # for node in queuedNodes:
-        #     print(graph[node[0]].value, node[1], end=",")
-        # print()
-        
-        
-    if end not in nodeParent:
-        return None
-    
-    return calculatePath(start, end, nodeParent)
+    pass
 
+def flatWorldHeuristic(graph: list, start: int, filename):
+    heuristicFile = open(filename, "r")
+    startingNode = graph[start]
+    NodeLat = 0
+    NodeLong = 0
+    
+    for line in heuristicFile:
+        splitedLine = line.split()
+        if splitedLine[0] == 'v' and int(splitedLine[1]) == startingNode.value:
+            NodeLat = int(splitedLine[3])
+            NodeLong = int(splitedLine[2])
+            break
+    
+    heuristicFile.seek(0)
+    ##calculate distance between all points 
+    for line in heuristicFile:
+        splitedLine = line.split()
+        if splitedLine[0] == 'v':
+            graph[int(splitedLine[1])].distHeuristic =  sqrt((int(splitedLine[3]) - NodeLat)**2 + (int(splitedLine[2]) - NodeLong)**2)
+            
+            
 def main():
     # read file NewYork.gr
     file = open("NewYork.gr", "r")
