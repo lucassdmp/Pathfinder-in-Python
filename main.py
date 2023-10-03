@@ -1,6 +1,7 @@
 from cmath import sqrt
 import operator
-import Node as nd
+import random
+import src.Node as nd
 import time
 
 def breadthFirstSearch(graph: list, start: int, end: int):
@@ -58,11 +59,42 @@ def calculatePath(start, finish, parentSet):
         currentNode = parentSet[currentNode]
     path.append(start)
     
-    return path
+    return path[::-1]
 
-def bestFirstSearch(graph: list, start: int, end: int):
-    pass
+def aStar(graph: list, start: int, end: int, coordFile):
+    visitedNodes = set()
+    queuedNodes = [graph[start]]
+    nodeParent = {}
+    
+    print("Building Heuristic")
+    flatWorldHeuristic(graph, start, coordFile)
+    print("Finished Building Heuristic")
+    
+    while queuedNodes is not []:
+        currentNode = queuedNodes.pop(0)
+        
+        visitedNodes.add(currentNode.value)
+        
+        if(currentNode.value == end):
+            break
 
+        for connectedNodeTuple in currentNode.connectedNodes:
+            connectedNode = graph[connectedNodeTuple[0]]
+            connectionDistance = connectedNodeTuple[1]
+            if connectedNodeTuple[0] not in visitedNodes and connectedNode not in queuedNodes:
+                queuedNodes.append(connectedNode)
+                nodeParent[connectedNode.value] = currentNode.value
+                connectedNode.distToRoot = currentNode.distToRoot + connectionDistance
+                connectedNode.distTotal = connectedNode.distToRoot + connectedNode.distHeuristic
+
+        queuedNodes.sort(key=operator.attrgetter("distTotal"))
+        
+    if end not in nodeParent:
+        return None
+
+    return calculatePath(start, end, nodeParent)
+
+##WORKING
 def flatWorldHeuristic(graph: list, start: int, filename):
     heuristicFile = open(filename, "r")
     startingNode = graph[start]
@@ -81,12 +113,20 @@ def flatWorldHeuristic(graph: list, start: int, filename):
     for line in heuristicFile:
         splitedLine = line.split()
         if splitedLine[0] == 'v':
-            graph[int(splitedLine[1])].distHeuristic =  sqrt((int(splitedLine[3]) - NodeLat)**2 + (int(splitedLine[2]) - NodeLong)**2)
+            graph[int(splitedLine[1])].lat = int(splitedLine[3])
+            graph[int(splitedLine[1])].lon = int(splitedLine[2])
             
+            latsSubtracted = int(splitedLine[3]) - NodeLat
+            longsSubtracted = int(splitedLine[2]) - NodeLong
+            graph[int(splitedLine[1])].distHeuristic =  int(sqrt((latsSubtracted * latsSubtracted) + (longsSubtracted * longsSubtracted)).real)
             
 def main():
     # read file NewYork.gr
-    file = open("NewYork.gr", "r")
+    filename = 'NewYork'
+    graphFile = filename + '.gr'
+    coordFile = filename + '.co'
+    
+    file = open(graphFile, "r")
     actionP, NODES, Conn = file.readline().split()
     NODES = int(NODES)
 
@@ -108,19 +148,22 @@ def main():
         else:
             continue
 
-    file.close()
-    startTimeBFS = time.perf_counter()
-    print(breadthFirstSearch(nodes, 1, 3))
-    endTimeBFS = time.perf_counter()
-    print("BrFS time: ", endTimeBFS - startTimeBFS, "seconds")
+    # file.close()
+    # startTimeBFS = time.perf_counter()
+    # print(breadthFirstSearch(nodes, 120000, 243552))
+    # endTimeBFS = time.perf_counter()
+    # print("BrFS time: ", endTimeBFS - startTimeBFS, "seconds")
 
     # startTimeDFS = time.perf_counter()
     # depthFirstSearch(nodes, 1, 6000)
     # endTimeDFS = time.perf_counter()
     # print("DFS time: ", endTimeDFS - startTimeDFS, "seconds")
 
+    firstValue = random.randint(1, 243552)
+    secondValue = random.randint(1, 243552)
+
     startTimeBFS = time.perf_counter()
-    print(bestFirstSearch(nodes, 1, 3))
+    print(aStar(nodes, firstValue, secondValue, coordFile))
     endTimeBFS = time.perf_counter()
     print("BFS time: ", endTimeBFS - startTimeBFS, "seconds")
 
