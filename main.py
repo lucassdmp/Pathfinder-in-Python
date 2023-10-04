@@ -61,23 +61,49 @@ def calculatePath(start, finish, parentSet):
     
     return path[::-1]
 
-def aStar(graph: list, start: int, end: int, coordFile, heuricticFunc):
+def bestFirstSearch(graph: list, start: int, end: int):
+    queuedNodes = [(graph[start], 0)]
+    visitedNodes = set()
+    nodeParent = {}
+    
+    while queuedNodes is not []:
+        nodeTupple = queuedNodes.pop(0)
+        node = nodeTupple[0]
+        nodeCost = nodeTupple[1]
+        visitedNodes.add(node.value)
+        
+        if node.value == end:
+            break
+        
+        for connectedNodeTuple in node.connectedNodes:
+            connectedNode = graph[connectedNodeTuple[0]]
+            connectedNodeCost = connectedNodeTuple[1]
+            if connectedNodeTuple[0] not in visitedNodes and connectedNode not in queuedNodes:
+                queuedNodes.append((connectedNode, connectedNodeCost))
+                nodeParent[connectedNode.value] = node.value
+        queuedNodes.sort(key=operator.itemgetter(1))
+        
+    if end not in nodeParent:
+        return None
+    
+    return calculatePath(start, end, nodeParent)
+
+def aStarDBNH(graph: list, start: int, end: int, coordFile):
     visitedNodes = set()
     queuedNodes = [graph[start]]
     nodeParent = {}
     
     print("Building Heuristic")
-    heuricticFunc(graph, start, coordFile)
+    heuristicDistanceBetweenNodes(graph, end, coordFile)
     print("Finished Building Heuristic")
     
     while queuedNodes is not []:
         currentNode = queuedNodes.pop(0)
-        
         visitedNodes.add(currentNode.value)
         
         if(currentNode.value == end):
             break
-
+            
         for connectedNodeTuple in currentNode.connectedNodes:
             connectedNode = graph[connectedNodeTuple[0]]
             connectionDistance = connectedNodeTuple[1]
@@ -94,10 +120,37 @@ def aStar(graph: list, start: int, end: int, coordFile, heuricticFunc):
 
     return calculatePath(start, end, nodeParent)
 
-##WORKING
-def heuristicDistanceBetweenNodes(graph: list, start: int, filename):
+def aStarFWH(graph: list, start: int, end: int, coordFile):
+    queuedNodes = [(graph[start], 0)]
+    visitedNodes = set()
+    nodeParent = {}
+    
+    print("Building Heuristic")
+    distanceToFinish = flatWorldHeuristic(graph, start, end, coordFile)
+    print("Finished Building Heuristic")
+    currentDistance = 0
+    
+    while queuedNodes is not []:
+        currentNodeTuple = queuedNodes.pop(0)
+        currentNode = currentNodeTuple[0]
+        currentDistance += currentNodeTuple[1]
+        visitedNodes.add(currentNode.value)
+        
+        if currentNode.value == end:
+            break
+        
+        for connectedNode in currentNode.connectedNodes:
+            if connectedNode[0] not in visitedNodes:
+                queuedNodes.append(graph[connectedNode[0]])
+                nodeParent[connectedNode[0]] = currentNode.value
+                
+        
+        
+        
+
+def heuristicDistanceBetweenNodes(graph: list, Start_Or_Finish: int, filename):
     heuristicFile = open(filename, "r")
-    startingNode = graph[start]
+    startingNode = graph[Start_Or_Finish]
     NodeLat = 0
     NodeLong = 0
     
@@ -119,7 +172,27 @@ def heuristicDistanceBetweenNodes(graph: list, start: int, filename):
             latsSubtracted = int(splitedLine[3]) - NodeLat
             longsSubtracted = int(splitedLine[2]) - NodeLong
             graph[int(splitedLine[1])].distHeuristic =  int(sqrt((latsSubtracted * latsSubtracted) + (longsSubtracted * longsSubtracted)).real)
+  
+def flatWorldHeuristic(graph: list, start: int, finish :int, filename):
+    startNode = graph[start]
+    finishNode = graph[finish]
+    heuristicFile = open(filename, "r")
+    
+    for line in heuristicFile:
+        splitedLine = line.split()
+        if splitedLine[0] == 'v' and int(splitedLine[1]) == startNode.value:
+            startNode.lat = int(splitedLine[3])
+            startNode.lon = int(splitedLine[2])
+        elif splitedLine[0] == 'v' and int(splitedLine[1]) == finishNode.value:
+            finishNode.lat = int(splitedLine[3])
+            finishNode.lon = int(splitedLine[2])
+        else:
+            Node = graph[int(splitedLine[1])]
+            Node.lat = int(splitedLine[3])
+            Node.lon = int(splitedLine[2])
             
+    return int(sqrt(((startNode.lat - finishNode.lat) * (startNode.lat - finishNode.lat)) + ((startNode.lon - finishNode.lon) * (startNode.lon - finishNode.lon))).real)
+                 
 def main():
     # read file NewYork.gr
     filename = 'NewYork'
@@ -159,13 +232,18 @@ def main():
     # endTimeDFS = time.perf_counter()
     # print("DFS time: ", endTimeDFS - startTimeDFS, "seconds")
 
-    firstValue = 154542 #random.randint(154542, 243400)
-    secondValue = 243400 #random.randint(1, 243552)
+    firstValue = random.randint(154542, 243400)
+    secondValue = random.randint(1, 243552)
 
     startTimeBFS = time.perf_counter()
-    print(aStar(nodes, firstValue, secondValue, coordFile, heuristicDistanceBetweenNodes))
+    print(aStarDBNH(nodes, firstValue, secondValue, coordFile))
+    endTimeBFS = time.perf_counter()
+    print("A* time: ", endTimeBFS - startTimeBFS, "seconds")
+    
+    startTimeBFS = time.perf_counter()
+    print(bestFirstSearch(nodes, firstValue, secondValue))
     endTimeBFS = time.perf_counter()
     print("BFS time: ", endTimeBFS - startTimeBFS, "seconds")
-
+    
 if __name__ == "__main__":
     main()

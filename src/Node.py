@@ -15,3 +15,6 @@ class Node:
     def doesConnectionExist(self, connection):
         return connection in self.connectedNodes
     
+    def __lt__(self, other):
+        return self.distTotal < other.distTotal
+    
