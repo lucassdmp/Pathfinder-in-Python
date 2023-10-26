@@ -80,7 +80,7 @@ def main():
 
     wb.active.title = "Relátorio 1"
 
-    collumns = ["A", "B", "C", "D", "E", "G", "H"]
+    collumns = ["A", "B", "C", "D", "E"]
     collumnsTitle = ["Algorithm", "Time", "Expanded Nodes", "Memory", "Path"]
 
     for sheet in wb:
@@ -177,7 +177,9 @@ def main():
         for i in range(2, 7):
             sheet['E'+str(i)].alignment = cellAlignment
 
-    wb.save("Relátorio.xlsx")
+    wookBookFilename = "Relátorio - " + filename + ".xlsx"
+
+    wb.save(wookBookFilename)
 
 
 if __name__ == "__main__":
