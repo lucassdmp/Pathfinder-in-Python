@@ -191,7 +191,7 @@ def aStarDBNH(graph: list, start: int, end: int, timeLimitSeconds=120):
                 nodeParent[connectedNode.value] = currentNode.value
                 connectedNode.distHeuristic = calculateDistanceBetweenNodes(
                     endNode, connectedNode
-                )
+                )+connectedNodeTuple[1]
 
         queuedNodes.sort(key=attrgetter("distHeuristic"))
 
@@ -238,7 +238,7 @@ def aStarHaversine(graph: list, start: int, end: int, timeLimitSeconds=120):
             ):
                 queuedNodes.append(connectedNode)
                 nodeParent[connectedNode.value] = currentNode.value
-                connectedNode.distHeuristic = haversineDistance(endNode, connectedNode)
+                connectedNode.distHeuristic = haversineDistance(endNode, connectedNode)+connectedNodeTuple[1]
 
         queuedNodes.sort(key=attrgetter("distHeuristic"))
 

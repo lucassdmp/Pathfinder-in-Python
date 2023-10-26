@@ -85,12 +85,39 @@ def main():
 
     collumns = ["A", "B", "C", "D", "E"]
     collumnsTitle = ["Algorithm", "Time", "Expanded Nodes", "Memory", "Path"]
+    functions = [aStarDBNH, aStarHaversine, breadthFirstSearch, depthFirstSearch, bestFirstSearch]
 
     startTime = perf_counter()
+    count = 1
     for sheet in wb:
+        for i in range(len(collumns)):
+            sheet[collumns[i] + "1"] = collumnsTitle[i]
+            sheet[collumns[i] + "1"].style = headerStyle
+            sheet.column_dimensions[collumns[i]].width = 30
+            
         firstValue = randint(1, NODES)
         secondValue = randint(1, NODES)
+        print("Teste " + str(count) + " de " + str(amountOfTests))
 
+        for function in functions:
+            Content = function(nodes, firstValue, secondValue, timeLimitSeconds)
+            timeLimit = ""
+            pathInLL = ""
+            if Content[3] < timeLimitSeconds:
+                timeLimit = Content[3]
+            else:
+                timeLimit = "Time Limit Exceeded"
+
+            if Content[0]:
+                pathInLL = pathInLatLon(nodes, Content[0])
+            else:
+                pathInLL = "No Path Found"
+            
+            sheet.append([Content[4], timeLimit, Content[2], Content[1], pathInLL])
+        count += 1
+        for i in range(2, 7):
+            sheet['E'+str(i)].alignment = cellAlignment
+            
         sheet["A9"] = "First Node"
         sheet["B9"] = "Second Node"
         sheet["A10"] = firstValue
@@ -98,93 +125,10 @@ def main():
         sheet['A9'].style = headerStyle
         sheet['B9'].style = headerStyle
 
-        Content = breadthFirstSearch(nodes, firstValue, secondValue, timeLimitSeconds)
-        sheet["A2"] = "Breadth First Search"
-        sheet["C2"] = Content[2]
-        sheet["D2"] = Content[1]
-
-        if Content[3] < timeLimitSeconds:
-            sheet["B2"] = Content[3]
-        else:
-            sheet["B2"] = "Time Limit Exceeded"
-
-        if Content[0]:
-            sheet["E2"] = pathInLatLon(nodes, Content[0])
-        else:
-            sheet["E2"] = "No Path Found"
-
-        Content = depthFirstSearch(nodes, firstValue, secondValue, timeLimitSeconds)
-        sheet["A3"] = "Depth First Search"
-        sheet["C3"] = Content[2]
-        sheet["D3"] = Content[1]
-
-        if Content[3] < timeLimitSeconds:
-            sheet["B3"] = Content[3]
-        else:
-            sheet["B3"] = "Time Limit Exceeded"
-
-        if Content[0]:
-            sheet["E3"] = pathInLatLon(nodes, Content[0])
-        else:
-            sheet["E3"] = "No Path Found"
-
-        Content = bestFirstSearch(nodes, firstValue, secondValue, timeLimitSeconds)
-        sheet["A4"] = "Best First Search"
-        sheet["C4"] = Content[2]
-        sheet["D4"] = Content[1]
-
-        if Content[3] < timeLimitSeconds:
-            sheet["B4"] = Content[3]
-        else:
-            sheet["B4"] = "Time Limit Exceeded"
-
-        if Content[0]:
-            sheet["E4"] = pathInLatLon(nodes, Content[0])
-        else:
-            sheet["E4"] = "No Path Found"
-
-        Content = aStarDBNH(nodes, firstValue, secondValue, timeLimitSeconds)
-        sheet["A5"] = "A* DBNH"
-        sheet["C5"] = Content[2]
-        sheet["D5"] = Content[1]
-
-        if Content[3] < timeLimitSeconds:
-            sheet["B5"] = Content[3]
-        else:
-            sheet["B5"] = "Time Limit Exceeded"
-
-        if Content[0]:
-            sheet["E5"] = pathInLatLon(nodes, Content[0])
-        else:
-            sheet["E5"] = "No Path Found"
-
-        Content = aStarHaversine(nodes, firstValue, secondValue, timeLimitSeconds)
-        sheet["A6"] = "A* Haversine"
-        sheet["C6"] = Content[2]
-        sheet["D6"] = Content[1]
-
-        if Content[3] < timeLimitSeconds:
-            sheet["B6"] = Content[3]
-        else:
-            sheet["B6"] = "Time Limit Exceeded"
-
-        if Content[0]:
-            sheet["E6"] = pathInLatLon(nodes, Content[0])
-        else:
-            sheet["E6"] = "No Path Found"
-
-        for i in range(len(collumns)):
-            sheet[collumns[i] + "1"] = collumnsTitle[i]
-            sheet[collumns[i] + "1"].style = headerStyle
-            sheet.column_dimensions[collumns[i]].width = 30
-
-        for i in range(2, 7):
-            sheet['E'+str(i)].alignment = cellAlignment
-
     CurrentTimeToStr = datetime.now().strftime("%d-%m-%Y %H-%M-%S")
     wookBookFilename = "Relátorio - " + filename + " - "+CurrentTimeToStr+".xlsx"
 
-    wb.active['B13'] = "Tempo de execução: " + str(perf_counter() - startTime) + " segundos"
+    wb[0]['B13'] = "Tempo de execução: " + str(perf_counter() - startTime) + " segundos"
     
     wb.save(wookBookFilename)
 
