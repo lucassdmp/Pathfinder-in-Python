@@ -3,8 +3,6 @@ class Node:
         self.value = value
         self.connectedNodes = []
         self.distHeuristic = 0
-        self.distToRoot = 0
-        self.distTotal = 0
         self.lat = 0
         self.lon = 0
         
@@ -16,5 +14,5 @@ class Node:
         return connection in self.connectedNodes
     
     def __lt__(self, other):
-        return self.distTotal < other.distTotal
+        return self.distHeuristic < other.distHeuristic 
     
