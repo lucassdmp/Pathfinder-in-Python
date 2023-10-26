@@ -1,9 +1,12 @@
 from random import randint
+from time import perf_counter
 import src.Node as nd
 from openpyxl import Workbook
 from src.Styles import headerStyle, cellAlignment
 from src.FindPathFunction import aStarDBNH, aStarHaversine, breadthFirstSearch, depthFirstSearch, bestFirstSearch
 from src.CalculatePathFunctions import pathInLatLon
+from datetime import datetime
+
 
 def loadLatLonFromNodes(graph: list, filename):
     coordfile = open(filename, "r")
@@ -83,6 +86,7 @@ def main():
     collumns = ["A", "B", "C", "D", "E"]
     collumnsTitle = ["Algorithm", "Time", "Expanded Nodes", "Memory", "Path"]
 
+    startTime = perf_counter()
     for sheet in wb:
         firstValue = randint(1, NODES)
         secondValue = randint(1, NODES)
@@ -177,8 +181,11 @@ def main():
         for i in range(2, 7):
             sheet['E'+str(i)].alignment = cellAlignment
 
-    wookBookFilename = "Relátorio - " + filename + ".xlsx"
+    CurrentTimeToStr = datetime.now().strftime("%d-%m-%Y %H-%M-%S")
+    wookBookFilename = "Relátorio - " + filename + " - "+CurrentTimeToStr+".xlsx"
 
+    wb.active['B13'] = "Tempo de execução: " + str(perf_counter() - startTime) + " segundos"
+    
     wb.save(wookBookFilename)
 
 

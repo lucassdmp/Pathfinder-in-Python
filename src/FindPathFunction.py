@@ -1,8 +1,12 @@
 from operator import attrgetter, itemgetter
 from time import perf_counter
 from psutil import Process
-from src.HeuristicDistanceFunctions import haversineDistance, calculateDistanceBetweenNodes
+from src.HeuristicDistanceFunctions import (
+    haversineDistance,
+    calculateDistanceBetweenNodes,
+)
 from src.CalculatePathFunctions import calculatePath
+
 
 def breadthFirstSearch(graph: list, start: int, end: int, timeLimitSeconds):
     startTime = perf_counter()
@@ -21,6 +25,7 @@ def breadthFirstSearch(graph: list, start: int, end: int, timeLimitSeconds):
                 expandedNodes,
                 Process().memory_info().rss - startMemory,
                 perf_counter() - startTime,
+                "Breadth First Search",
             )
 
         currentNode = queuedNodes.pop(0)
@@ -41,6 +46,7 @@ def breadthFirstSearch(graph: list, start: int, end: int, timeLimitSeconds):
             expandedNodes,
             Process().memory_info().rss - startMemory,
             perf_counter() - startTime,
+            "Breadth First Search",
         )
 
     return (
@@ -48,6 +54,7 @@ def breadthFirstSearch(graph: list, start: int, end: int, timeLimitSeconds):
         expandedNodes,
         Process().memory_info().rss - startMemory,
         perf_counter() - startTime,
+        "Breadth First Search",
     )
 
 
@@ -68,6 +75,7 @@ def depthFirstSearch(graph: list, start: int, end: int, timeLimitSeconds=120):
                 expandedNodes,
                 Process().memory_info().rss - startMemory,
                 perf_counter() - startTime,
+                "Depth First Search",
             )
         currentNode = stackedNodes.pop()
         expandedNodes += 1
@@ -82,13 +90,20 @@ def depthFirstSearch(graph: list, start: int, end: int, timeLimitSeconds=120):
                 nodeParent[connectedNode[0]] = currentNode
 
     if end not in nodeParent:
-        return ([], expandedNodes)
+        return (
+            [],
+            expandedNodes,
+            Process().memory_info().rss - startMemory,
+            perf_counter() - startTime,
+            "Depth First Search",
+        )
 
     return (
         calculatePath(start, end, nodeParent),
         expandedNodes,
         Process().memory_info().rss - startMemory,
         perf_counter() - startTime,
+        "Depth First Search",
     )
 
 
@@ -108,6 +123,7 @@ def bestFirstSearch(graph: list, start: int, end: int, timeLimitSeconds=120):
                 expandedNodes,
                 Process().memory_info().rss - startMemory,
                 perf_counter() - startTime,
+                "Best First Search",
             )
 
         nodeTupple = queuedNodes.pop(0)
@@ -136,6 +152,7 @@ def bestFirstSearch(graph: list, start: int, end: int, timeLimitSeconds=120):
             expandedNodes,
             Process().memory_info().rss - startMemory,
             perf_counter() - startTime,
+            "Best First Search",
         )
 
     return (
@@ -143,6 +160,7 @@ def bestFirstSearch(graph: list, start: int, end: int, timeLimitSeconds=120):
         expandedNodes,
         Process().memory_info().rss - startMemory,
         perf_counter() - startTime,
+        "Best First Search",
     )
 
 
@@ -183,6 +201,7 @@ def aStarDBNH(graph: list, start: int, end: int, timeLimitSeconds=120):
             expandedNodes,
             Process().memory_info().rss - startMemory,
             perf_counter() - startTime,
+            "A* DBNH",
         )
 
     return (
@@ -190,6 +209,7 @@ def aStarDBNH(graph: list, start: int, end: int, timeLimitSeconds=120):
         expandedNodes,
         Process().memory_info().rss - startMemory,
         perf_counter() - startTime,
+        "A* DBNH",
     )
 
 
@@ -228,6 +248,7 @@ def aStarHaversine(graph: list, start: int, end: int, timeLimitSeconds=120):
             expandedNodes,
             Process().memory_info().rss - startMemory,
             perf_counter() - startTime,
+            "A* Haversine",
         )
 
     return (
@@ -235,4 +256,5 @@ def aStarHaversine(graph: list, start: int, end: int, timeLimitSeconds=120):
         expandedNodes,
         Process().memory_info().rss - startMemory,
         perf_counter() - startTime,
+        "A* Haversine",
     )
