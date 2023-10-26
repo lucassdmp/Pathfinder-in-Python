@@ -8,6 +8,7 @@ from openpyxl import Workbook
 import math
 from src.Styles import headerStyle, cellAlignment
 
+
 def haversineDistance(node1, node2):
     lat1 = math.radians(node1.lat) / 1000000
     lon1 = math.radians(node1.lon) / 1000000
@@ -366,9 +367,9 @@ def main():
     file.close()
 
     loadLatLonFromNodes(nodes, coordFile)
-    
-    print('starting tests...')
-    #A* DBNH and A* Haversine
+
+    print("starting tests...")
+    # A* DBNH and A* Haversine
     firstValue = 441116
     secondValue = 2163016
     print("first node: ", firstValue)
@@ -380,7 +381,7 @@ def main():
     print("Time: " + str(Content[3]))
     print("first node: ", firstValue)
     print("second node: ", secondValue)
-    
+
     Content = aStarHaversine(nodes, firstValue, secondValue, timeLimitSeconds)
     print("A* Haversine")
     print("Expanded Nodes: " + str(Content[1]))
@@ -400,10 +401,10 @@ def main():
     # for sheet in wb:
     #     firstValue = random.randint(1, NODES)
     #     secondValue = random.randint(1, NODES)
-        
+
     #     sheet["G2"] = firstValue
     #     sheet["H2"] = secondValue
-        
+
     #     Content = breadthFirstSearch(nodes, firstValue, secondValue, timeLimitSeconds)
     #     sheet["A2"] = "Breadth First Search"
     #     sheet["C2"] = Content[2]
@@ -478,12 +479,12 @@ def main():
     #         sheet["E6"] = pathInLatLon(nodes, Content[0])
     #     else:
     #         sheet["E6"] = "No Path Found"
-            
+
     #     for i in range(len(collumns)):
     #         sheet[collumns[i] + "1"] = collumnsTitle[i]
     #         sheet[collumns[i] + "1"].style = headerStyle
     #         sheet.column_dimensions[collumns[i]].width = 30
-            
+
     #     for i in range(2, 7):
     #         sheet['E'+str(i)].alignment = cellAlignment
 

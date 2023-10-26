@@ -1,19 +1,18 @@
 
 <h1><b> Python PathFinder </b></h1>
 
-**Instructions**
 
-<h5>
-<ol>
-<li>To use the code, first make sure that the file `files.txt` is in the same directory as the code. The file `files.txt` should contain a list of the graph file names, one per line.</li><br>
-
-<li>Once the code is running, it will prompt you to select a graph file name. Enter the number of the graph file name that you want to use.</li><br>
-
-<li>Next, the code will prompt you to enter the number of random distance tests that you want to make. Enter the number of tests that you want to make.</li><br>
-
-<li>Finally, the code will prompt you to enter the time tolerance for the test to fail to yield results. Enter the time tolerance in seconds.</li><br>
-</ol></h5>
-The code will then start making the random distance tests. The results of the tests will be added to a .xlsx.
+<h3>Prerequisites</h3>
+<h5><ul>
+<li>The file files.txt must be in the same directory as the code.</li>
+<li>The file files.txt must contain a list of graph file names, one per line.</li></ul></h5>
+<h3>Introduction</h3>
+<h5><ol>
+<li>Execute the code.</li>
+<li>Select the desired graph file name by entering the corresponding number.</li>
+<li>Enter the desired number of random distance tests.</li>
+<li>Enter the desired time tolerance for the test to fail to yield results in seconds.</li></ol></h5>
+The code will then perform N-tests on two random points using 5 different types of algorithms. The results of the tests will be appended to an Excel spreadsheet (.xlsx).
 
 
 <h5>Observation:<p>Both .gr and .co must have the same name before the extension format</p></h5>
