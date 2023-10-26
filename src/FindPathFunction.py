@@ -8,7 +8,7 @@ from src.HeuristicDistanceFunctions import (
 from src.CalculatePathFunctions import calculatePath
 
 
-def breadthFirstSearch(graph: list, start: int, end: int, timeLimitSeconds):
+def depthFirstSearch(graph: list, start: int, end: int, timeLimitSeconds):
     startTime = perf_counter()
     startMemory = Process().memory_info().rss
 
@@ -58,7 +58,7 @@ def breadthFirstSearch(graph: list, start: int, end: int, timeLimitSeconds):
     )
 
 
-def depthFirstSearch(graph: list, start: int, end: int, timeLimitSeconds=120):
+def breadthFirstSearch(graph: list, start: int, end: int, timeLimitSeconds=120):
     startTime = perf_counter()
     startMemory = Process().memory_info().rss
 
@@ -189,9 +189,9 @@ def aStarDBNH(graph: list, start: int, end: int, timeLimitSeconds=120):
             ):
                 queuedNodes.append(connectedNode)
                 nodeParent[connectedNode.value] = currentNode.value
-                connectedNode.distHeuristic = calculateDistanceBetweenNodes(
-                    endNode, connectedNode
-                )+connectedNodeTuple[1]
+                connectedNode.distHeuristic = (
+                    calculateDistanceBetweenNodes(endNode, connectedNode)
+                )
 
         queuedNodes.sort(key=attrgetter("distHeuristic"))
 
@@ -238,7 +238,9 @@ def aStarHaversine(graph: list, start: int, end: int, timeLimitSeconds=120):
             ):
                 queuedNodes.append(connectedNode)
                 nodeParent[connectedNode.value] = currentNode.value
-                connectedNode.distHeuristic = haversineDistance(endNode, connectedNode)+connectedNodeTuple[1]
+                connectedNode.distHeuristic = (
+                    haversineDistance(endNode, connectedNode)
+                )
 
         queuedNodes.sort(key=attrgetter("distHeuristic"))
 

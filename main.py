@@ -128,7 +128,7 @@ def main():
     CurrentTimeToStr = datetime.now().strftime("%d-%m-%Y %H-%M-%S")
     wookBookFilename = "Relátorio - " + filename + " - "+CurrentTimeToStr+".xlsx"
 
-    wb[0]['B13'] = "Tempo de execução: " + str(perf_counter() - startTime) + " segundos"
+    # wb[0]['B13'] = "Tempo de execução: " + str(perf_counter() - startTime) + " segundos"
     
     wb.save(wookBookFilename)
 
